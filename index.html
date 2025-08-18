@@ -654,10 +654,10 @@
                         allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
                         allowfullscreen></iframe>`;
                 } else { // Generic iframe for other types
-                    // [FIX] Removed the 'sandbox' attribute to solve the issue shown in the screenshot.
+                    // [FIX] 'sandbox' attribute has been removed and maximum permissions are given.
                     playerContainer.innerHTML = `<iframe src="${stream.url}" 
                         referrerpolicy="no-referrer"
-                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; cross-origin-isolated; display-capture; gamepad; geolocation; hid; identity-credentials-get; keyboard-map; magnetometer; microphone; midi; otp-credentials; payment; publickey-credentials-get; screen-wake-lock; serial; speaker-selection; usb; window-management; xr-spatial-tracking"
                         allowfullscreen></iframe>`;
                 }
             },
@@ -682,9 +682,10 @@
                 } else if (isUpcoming) {
                     metaHTML = `<div class="time">${startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div><div class="date">${startDate.toLocaleDateString('en-GB')}</div><div class="countdown" data-start-time="${ev.startAt}">Calculating...</div>`;
                 }
+                // [FIX] Corrected the typo from 'class.' to 'class="' in the div below. This will fix the layout issue.
                 return `<div class="event" data-id="${ev.id}">
                     <div class="event-header"><img src="${ev.leagueLogo || ''}" alt="" onerror="this.style.display='none';"><span>${ev.category} | ${ev.league}</span></div>
-                    <div class.event-body">
+                    <div class="event-body">
                         <div class="team-box"><img class="logo-img" src="${ev.teams.home.logo}" onerror="this.style.display='none';"><span class="team-name">${ev.teams.home.name}</span></div>
                         <div class="meta">${metaHTML}</div>
                         <div class="team-box"><img class="logo-img" src="${ev.teams.away.logo}" onerror="this.style.display='none';"><span class="team-name">${ev.teams.away.name}</span></div>
