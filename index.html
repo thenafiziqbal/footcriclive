@@ -654,10 +654,11 @@
                         allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
                         allowfullscreen></iframe>`;
                 } else { // Generic iframe for other types
-                    // [FIX] 'sandbox' attribute has been removed and maximum permissions are given.
+                    // [FIX & IMPROVEMENT] Added a more permissive sandbox to allow pop-ups as requested.
                     playerContainer.innerHTML = `<iframe src="${stream.url}" 
                         referrerpolicy="no-referrer"
-                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; cross-origin-isolated; display-capture; gamepad; geolocation; hid; identity-credentials-get; keyboard-map; magnetometer; microphone; midi; otp-credentials; payment; publickey-credentials-get; screen-wake-lock; serial; speaker-selection; usb; window-management; xr-spatial-tracking"
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation"
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
                         allowfullscreen></iframe>`;
                 }
             },
