@@ -49,7 +49,6 @@
   @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { scale(1); opacity: 1; } }
   @keyframes shimmer { 0% { background-position: -468px 0; } 100% { background-position: 468px 0; } }
   
-  /* [NEW] Animation for the loader text */
   @keyframes textPulse {
     0%, 100% { opacity: 0.7; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.05); }
@@ -164,7 +163,6 @@
   .skeleton .event-header, .skeleton .logo-img, .skeleton .team-name, .skeleton .time, .skeleton .date { background: linear-gradient(90deg, var(--card) 25%, #3a3a3a 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; color: transparent; border-radius: 8px; }
 
   /* --- Full Page Loader --- */
-  /* [MODIFIED] Loader style to support text animation */
   #loadingSpinner { 
     position: fixed; 
     inset: 0; 
@@ -185,7 +183,6 @@
     border-radius: 50%; 
     animation: spin 0.8s linear infinite; 
   }
-  /* [NEW] Animated brand name for the loader */
   .loader-brand {
     font-size: 24px;
     font-weight: 700;
@@ -197,7 +194,6 @@
 </head>
 <body>
 
-  <!-- [MODIFIED] Added the animated brand name to the loader -->
   <div id="loadingSpinner">
     <div class="loader-brand">FOOTCRIC.LIVE</div>
   </div>
@@ -323,15 +319,11 @@
             warningText: document.getElementById('warningText'),
         },
 
-        // --- INITIALIZATION ---
         async init() {
             this.ui.showLoader();
             
-            // [FIX & IMPROVEMENT] Added a failsafe timeout.
-            // This will hide the loader after 10 seconds if the app fails to load,
-            // preventing it from getting stuck forever on the loading screen.
             const loadingTimeout = setTimeout(() => {
-                console.warn("App loading timed out. Forcing UI to display to prevent getting stuck.");
+                console.warn("App loading timed out. Forcing UI to display.");
                 this.ui.hideLoader();
             }, 10000);
 
@@ -365,14 +357,11 @@
                 console.error("Firebase Initialization Error:", error);
                 this.elements.mainContent.innerHTML = '<div>Error: Failed to load application data. Please try refreshing the page.</div>';
             } finally {
-                // When loading finishes (successfully or with an error), clear the failsafe timeout
-                // and hide the loader normally.
                 clearTimeout(loadingTimeout);
                 this.ui.hideLoader();
             }
         },
 
-        // --- EVENT LISTENERS (No changes needed here) ---
         addEventListeners() {
             document.body.addEventListener('click', e => {
                 const eventCard = e.target.closest('.event');
@@ -424,7 +413,6 @@
             document.getElementById('acceptWarningBtn').onclick = () => this.ui.acceptWarning();
         },
 
-        // --- UTILITY, ROUTING, UI, PLAYER, TEMPLATES (No other changes needed in these sections) ---
         utils: {
             formatCountdown(targetDate) {
                 const distance = new Date(targetDate) - new Date();
@@ -665,11 +653,11 @@
                     playerContainer.innerHTML = `<iframe src="${embedUrl}" 
                         allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
                         allowfullscreen></iframe>`;
-                } else {
+                } else { // Generic iframe for other types
+                    // [FIX] Removed the 'sandbox' attribute to solve the issue shown in the screenshot.
                     playerContainer.innerHTML = `<iframe src="${stream.url}" 
                         referrerpolicy="no-referrer"
                         allow="autoplay; encrypted-media; fullscreen; picture-in-picture" 
-                        sandbox="allow-scripts allow-same-origin allow-presentation allow-forms allow-pointer-lock allow-popups"
                         allowfullscreen></iframe>`;
                 }
             },
@@ -695,11 +683,11 @@
                     metaHTML = `<div class="time">${startDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div><div class="date">${startDate.toLocaleDateString('en-GB')}</div><div class="countdown" data-start-time="${ev.startAt}">Calculating...</div>`;
                 }
                 return `<div class="event" data-id="${ev.id}">
-                    <div class="event-header"><img src="${ev.leagueLogo || ''}" alt=""><span>${ev.category} | ${ev.league}</span></div>
-                    <div class="event-body">
-                        <div class="team-box"><img class="logo-img" src="${ev.teams.home.logo}" onerror="this.style.opacity=0"><span class="team-name">${ev.teams.home.name}</span></div>
+                    <div class="event-header"><img src="${ev.leagueLogo || ''}" alt="" onerror="this.style.display='none';"><span>${ev.category} | ${ev.league}</span></div>
+                    <div class.event-body">
+                        <div class="team-box"><img class="logo-img" src="${ev.teams.home.logo}" onerror="this.style.display='none';"><span class="team-name">${ev.teams.home.name}</span></div>
                         <div class="meta">${metaHTML}</div>
-                        <div class="team-box"><img class="logo-img" src="${ev.teams.away.logo}" onerror="this.style.opacity=0"><span class="team-name">${ev.teams.away.name}</span></div>
+                        <div class="team-box"><img class="logo-img" src="${ev.teams.away.logo}" onerror="this.style.display='none';"><span class="team-name">${ev.teams.away.name}</span></div>
                     </div>
                 </div>`;
             },
